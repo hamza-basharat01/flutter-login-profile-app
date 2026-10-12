@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 
 void main() {
@@ -11,10 +12,120 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const LoginPage(),
+      home: const WelcomePage(),
     );
   }
 }
+
+// ================= WELCOME PAGE =================
+
+class WelcomePage extends StatefulWidget {
+  const WelcomePage({super.key});
+
+  @override
+  State<WelcomePage> createState() => _WelcomePageState();
+}
+
+class _WelcomePageState extends State<WelcomePage> {
+  double logoSize = 60;
+  double opacity = 1;
+
+  @override
+  void initState() {
+    super.initState();
+    startAnimation();
+  }
+
+  void startAnimation() async {
+    for (int i = 0; i < 5; i++) {
+      await Future.delayed(const Duration(seconds: 1));
+
+      if (!mounted) return;
+
+      setState(() {
+        logoSize += 15;
+        opacity -= 0.2;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Welcome"),
+        centerTitle: true,
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            AnimatedContainer(
+              duration: const Duration(seconds: 1),
+              child: Icon(
+                Icons.flutter_dash,
+                size: logoSize,
+              ),
+            ),
+            const SizedBox(height: 20),
+            AnimatedOpacity(
+              opacity: opacity,
+              duration: const Duration(seconds: 1),
+              child: const WelcomeMessage(
+                title: "Welcome to My App",
+                subtitle: "Learn, Build and Grow",
+              ),
+            ),
+            const SizedBox(height: 30),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const LoginPage(),
+                  ),
+                );
+              },
+              child: const Text("GET STARTED"),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ================= WELCOME MESSAGE =================
+
+class WelcomeMessage extends StatelessWidget {
+  final String title;
+  final String subtitle;
+
+  const WelcomeMessage({
+    super.key,
+    required this.title,
+    required this.subtitle,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          title,
+          style: const TextStyle(
+            fontSize: 25,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 10),
+        Text(subtitle),
+      ],
+    );
+  }
+}
+
+// ================= LOGIN PAGE =================
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -49,30 +160,28 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   @override
+  void dispose() {
+    email.dispose();
+    password.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Login"),
         centerTitle: true,
       ),
-
       body: Padding(
         padding: const EdgeInsets.all(25),
-
         child: Form(
           key: formKey,
-
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-
             children: [
-              const Icon(
-                Icons.person,
-                size: 70,
-              ),
-
+              const Icon(Icons.person, size: 70),
               const SizedBox(height: 20),
-
               const Text(
                 "Login",
                 style: TextStyle(
@@ -80,9 +189,7 @@ class _LoginPageState extends State<LoginPage> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-
               const SizedBox(height: 25),
-
               TextFormField(
                 controller: email,
                 decoration: const InputDecoration(
@@ -90,7 +197,6 @@ class _LoginPageState extends State<LoginPage> {
                   prefixIcon: Icon(Icons.email),
                   border: OutlineInputBorder(),
                 ),
-
                 validator: (value) {
                   if (value == null ||
                       value.isEmpty ||
@@ -100,33 +206,25 @@ class _LoginPageState extends State<LoginPage> {
                   return null;
                 },
               ),
-
               const SizedBox(height: 15),
-
               TextFormField(
                 controller: password,
                 obscureText: true,
-
                 decoration: const InputDecoration(
                   labelText: "Password",
                   prefixIcon: Icon(Icons.lock),
                   border: OutlineInputBorder(),
                 ),
-
                 validator: (value) {
-                  if (value == null ||
-                      value.length < 6) {
+                  if (value == null || value.length < 6) {
                     return "Invalid password";
                   }
                   return null;
                 },
               ),
-
               const SizedBox(height: 20),
-
               SizedBox(
                 width: double.infinity,
-
                 child: ElevatedButton(
                   onPressed: login,
                   child: const Text("LOGIN"),
@@ -140,7 +238,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 }
 
-// ================= PROFILE =================
+// ================= PROFILE PAGE =================
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -151,11 +249,9 @@ class ProfilePage extends StatelessWidget {
       appBar: AppBar(
         title: const Text("My Profile"),
         centerTitle: true,
-
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
-
             onPressed: () {
               Navigator.pushAndRemoveUntil(
                 context,
@@ -168,21 +264,14 @@ class ProfilePage extends StatelessWidget {
           ),
         ],
       ),
-
       body: Column(
         children: [
           const SizedBox(height: 30),
-
           const CircleAvatar(
             radius: 80,
-
-            backgroundImage: AssetImage(
-              "images/profile.png",
-            ),
+            backgroundImage: AssetImage("images/profile.png"),
           ),
-
           const SizedBox(height: 20),
-
           const Text(
             "Hafiz Hamza",
             style: TextStyle(
@@ -190,23 +279,16 @@ class ProfilePage extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-
           const SizedBox(height: 8),
-
           const Text(
             "BS Software Engineering Student",
-            style: TextStyle(
-              fontSize: 16,
-            ),
+            style: TextStyle(fontSize: 16),
           ),
-
           const Padding(
             padding: EdgeInsets.all(25),
-
             child: Text(
-              "I am Hafiz Hamza, a Software Engineering "
-                  "student interested in programming, Flutter "
-                  "and mobile application development.",
+              "Software Engineering student interested in "
+                  "programming, Flutter and mobile app development.",
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 16),
             ),
